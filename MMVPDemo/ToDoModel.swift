@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import RealmSwift
 
 protocol ToDoMenuItemViewPresentable {
     var title : String? {get set}
@@ -129,20 +130,102 @@ extension TodoItemViewModel:ToDoItemViewDelegate
 class ToDoModel:ItemS
     
 {
-   
-  
     var newValue: String?
-    
-    
     var items : Variable<[ToDoItemPresentable]> = Variable([])
-    
+    var database:Database?
+    var notificationToken:NotificationToken? = nil
+
     init()
     {
-      
-        let item1 = TodoItemViewModel(id1: "1", textVal: "Mac PC",parentViewModel:self as ToDoViewDelegate)
-        let item2 = TodoItemViewModel(id1: "2", textVal: "Laptop",parentViewModel:self as ToDoViewDelegate)
-        let item3 = TodoItemViewModel(id1: "3", textVal: "iphone7",parentViewModel:self as ToDoViewDelegate)
-        items.value.append(contentsOf:[item1,item2,item3])
+        database = Database.singletone
+        let toDoItemsResults = database?.fetch()
+        notificationToken = toDoItemsResults?.observe({ [weak self](changes:RealmCollectionChange) in
+            
+            switch(changes)
+            {
+            case .initial:
+                
+                toDoItemsResults?.forEach({ (ToDoItemEntity) in
+                    
+                    let todoItem = ToDoItemEntity
+                    
+                    let itemIndex = todoItem.toDoId
+                    let newValueOfItem = todoItem.toDoValue
+                    
+                    let newItem=TodoItemViewModel(id1: "\(itemIndex)", textVal:newValueOfItem,parentViewModel:self!)
+                    self?.items.value.append(newItem)
+                    
+                 })
+                
+                break
+            case .update(_,let deletions,let insertions,let modifications):
+                
+                insertions.forEach({ (index) in
+                   
+                    let todoItem = toDoItemsResults![index]
+                    
+                    let itemIndex = todoItem.toDoId
+                    let newValueOfItem = todoItem.toDoValue
+                    
+                    let newItem=TodoItemViewModel(id1: "\(itemIndex)", textVal:newValueOfItem,parentViewModel:self!)
+                    self?.items.value.append(newItem)
+                 })
+                
+                modifications.forEach({ (index) in
+                    
+                    let todoItemEntity = toDoItemsResults![index]
+                 
+                    guard let index = self?.items.value.index(where: { Int($0.id!) == todoItemEntity.toDoId})
+                        else { return }
+                   
+                    if todoItemEntity.deletedAt != nil
+                    {
+                         self?.items.value.remove(at: index)
+                         self?.database?.delete(primaryKey: todoItemEntity.toDoId)
+                    }
+                    else
+                    {
+                        var toDoItemMo = self?.items.value[index]
+                        
+                        toDoItemMo?.isDone = todoItemEntity.isDone
+                        
+                        if var doneMenuItem = toDoItemMo?.menuItems?.filter({ (toDoMenuItem) -> Bool in
+                            toDoMenuItem is DoneMenuItemToDo
+                        }).first
+                        {
+                            doneMenuItem.title = todoItemEntity.isDone ? "UnDone" : "Done"
+                        }
+                    }
+                    
+                   
+                    
+                    
+                })
+                
+                
+                 break
+                
+            case .error(let error):
+                 break
+                
+            }
+            
+            self?.items.value.sort(by:
+                {
+                    if !($0.isDone!) && !($1.isDone!)
+                    {
+                        return $0.id! < $1.id!
+                    }
+                    if $0.isDone! && $1.isDone!
+                    {
+                        return $0.id! < $1.id!
+                    }
+                    return !($0.isDone!) && $1.isDone!
+               })
+        })
+    }
+    deinit {
+        notificationToken?.invalidate()
     }
  }
 
@@ -151,49 +234,20 @@ extension ToDoModel:ToDoViewDelegate
 {
     func onAddItem() {
         guard let newValueOfItem = newValue else  {return }
-        let itemIndex = items.value.count + 1
-        let newItem=TodoItemViewModel(id1: "\(itemIndex)", textVal:newValueOfItem,parentViewModel:self as ToDoViewDelegate)
-        self.items.value.append(newItem)
+        database?.createOrUpdate(toDoItemUpdate: newValueOfItem)
         self.newValue=""
         
     }
     
     func onRemoveSelected(toDoItem: String) {
-        guard let index = self.items.value.index(where: {$0.id! == toDoItem})
-            else { return }
-        
-        self.items.value.remove(at: index)
+        database?.softDelete(primarykey: Int(toDoItem)!)
        
     }
     
     func onDoneSelected(toDoItem: String) {
-        guard let index = self.items.value.index(where: {$0.id! == toDoItem})
-            else { return }
-        
-            var toDoItem = self.items.value[index]
-        
-           toDoItem.isDone = !(toDoItem.isDone)!
-        
-            if var doneMenuItem = toDoItem.menuItems?.filter({ (toDoMenuItem) -> Bool in
-                 toDoMenuItem is DoneMenuItemToDo
-             }).first
-              {
-                doneMenuItem.title = toDoItem.isDone! ? "UnDone" : "Done"
-              }
-           self.items.value.sort(by:
-            {
-                if !($0.isDone!) && !($1.isDone!)
-                {
-                    return $0.id! < $1.id!
-                }
-                if $0.isDone! && $1.isDone!
-                {
-                    return $0.id! < $1.id!
-                }
-            return !($0.isDone!) && $1.isDone!
-            })
        
-       
+        database?.isDone(primaryKey:Int(toDoItem)!)
+        
     }
     
   

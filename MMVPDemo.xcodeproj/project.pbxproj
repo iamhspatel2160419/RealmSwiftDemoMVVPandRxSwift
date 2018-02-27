@@ -12,6 +12,8 @@
 		E019D73F2042C0D70047DF18 /* Simulator Screen Shot - iPhone 6 - 2018-02-25 at 01.59.55.png in Resources */ = {isa = PBXBuildFile; fileRef = E019D73B2042C0D50047DF18 /* Simulator Screen Shot - iPhone 6 - 2018-02-25 at 01.59.55.png */; };
 		E019D7402042C0D70047DF18 /* Simulator Screen Shot - iPhone 6 - 2018-02-25 at 02.00.13.png in Resources */ = {isa = PBXBuildFile; fileRef = E019D73C2042C0D60047DF18 /* Simulator Screen Shot - iPhone 6 - 2018-02-25 at 02.00.13.png */; };
 		E019D7412042C0D70047DF18 /* Simulator Screen Shot - iPhone 6 - 2018-02-25 at 01.59.07.png in Resources */ = {isa = PBXBuildFile; fileRef = E019D73D2042C0D70047DF18 /* Simulator Screen Shot - iPhone 6 - 2018-02-25 at 01.59.07.png */; };
+		E02DB00220456C8000277E47 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02DB00120456C8000277E47 /* Database.swift */; };
+		E02DB0042045714E00277E47 /* ToDoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02DB0032045714E00277E47 /* ToDoItem.swift */; };
 		E0E0EA112041767C0087063E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E0EA102041767C0087063E /* AppDelegate.swift */; };
 		E0E0EA132041767D0087063E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E0EA122041767D0087063E /* ViewController.swift */; };
 		E0E0EA16204176800087063E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E0E0EA14204176800087063E /* Main.storyboard */; };
@@ -28,6 +30,8 @@
 		E019D73B2042C0D50047DF18 /* Simulator Screen Shot - iPhone 6 - 2018-02-25 at 01.59.55.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Simulator Screen Shot - iPhone 6 - 2018-02-25 at 01.59.55.png"; sourceTree = "<group>"; };
 		E019D73C2042C0D60047DF18 /* Simulator Screen Shot - iPhone 6 - 2018-02-25 at 02.00.13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Simulator Screen Shot - iPhone 6 - 2018-02-25 at 02.00.13.png"; sourceTree = "<group>"; };
 		E019D73D2042C0D70047DF18 /* Simulator Screen Shot - iPhone 6 - 2018-02-25 at 01.59.07.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Simulator Screen Shot - iPhone 6 - 2018-02-25 at 01.59.07.png"; sourceTree = "<group>"; };
+		E02DB00120456C8000277E47 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		E02DB0032045714E00277E47 /* ToDoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoItem.swift; sourceTree = "<group>"; };
 		E0E0EA0D204176790087063E /* MMVPDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMVPDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0E0EA102041767C0087063E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0E0EA122041767D0087063E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -105,6 +109,8 @@
 				E0E0EA17204176820087063E /* Assets.xcassets */,
 				E0E0EA19204176840087063E /* LaunchScreen.storyboard */,
 				E0E0EA1C204176890087063E /* Info.plist */,
+				E02DB00120456C8000277E47 /* Database.swift */,
+				E02DB0032045714E00277E47 /* ToDoItem.swift */,
 			);
 			path = MMVPDemo;
 			sourceTree = "<group>";
@@ -218,11 +224,15 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-MMVPDemo/Pods-MMVPDemo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 			);
@@ -255,7 +265,9 @@
 			files = (
 				E0E0EA132041767D0087063E /* ViewController.swift in Sources */,
 				E0E0EA26204183960087063E /* ToDoItemViewCell.swift in Sources */,
+				E02DB0042045714E00277E47 /* ToDoItem.swift in Sources */,
 				E0E0EA112041767C0087063E /* AppDelegate.swift in Sources */,
+				E02DB00220456C8000277E47 /* Database.swift in Sources */,
 				E0E0EA2320417D0F0087063E /* ToDoModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

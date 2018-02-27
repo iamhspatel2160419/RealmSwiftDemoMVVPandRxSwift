@@ -9,6 +9,6 @@ target 'MMVPDemo' do
 
     pod 'RxSwift'
     pod 'RxCocoa'
-
+    pod ‘RealmSwift’ 
 
 end
